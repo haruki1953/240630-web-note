@@ -3,4 +3,7 @@
 - 自己的Ubuntu又坏了，重装了
 
 ### 240702
-配置了ubuntu，装了nginx
+配置了ubuntu，装了nginx😵
+
+### 240703
+nginx安装、核心配置文件结构
