@@ -550,3 +550,357 @@ alias是一个目录别名的定义，root则是最上层目录的含义。
 如果location路径是以/结尾,则alias也必须是以/结尾，root没有要求
 ```
 
+#### index指令
+
+| 语法   | index file ...;        |
+| ------ | ---------------------- |
+| 默认值 | index index.html;      |
+| 位置   | http、server、location |
+index:设置网站的默认首页
+
+index后面可以跟多个设置，如果访问的时候没有指定具体访问的资源，则会依次进行查找，找到第一个为止。
+
+举例说明：
+```
+location / {
+	root /usr/local/nginx/html;
+	index index.html index.htm;
+}
+访问该location的时候，可以通过 http://ip:port/，地址后面如果不添加任何内容，则默认依次访问index.html和index.htm，找到第一个来进行返回
+```
+
+
+#### error_page指令
+
+| 语法   | error_page code ... [=[response]] uri; |
+| ------ | -------------------------------------- |
+| 默认值 | —                                      |
+| 位置   | http、server、location......           |
+error_page:设置网站的错误页面
+
+当出现对应的响应code后，如何来处理。
+举例说明：
+
+（1）可以指定具体跳转的地址
+```
+server {
+	error_page 404 http://www.itcast.cn;
+}
+```
+
+（2）可以指定重定向地址
+```
+server{
+	error_page 404 /50x.html;
+	error_page 500 502 503 504 /50x.html;
+	location =/50x.html{
+		root html;
+	}
+}
+```
+
+（3）使用location的@符合完成错误信息展示
+```
+server{
+	error_page 404 @jump_to_error;
+	location @jump_to_error {
+		default_type text/plain;
+		return 404 'Not Found Page...';
+	}
+}
+```
+
+可选项`=[response]`的作用是用来将相应代码更改为另外一个
+```
+server{
+	error_page 404 =200 /50x.html;
+	location =/50x.html{
+		root html;
+	}
+}
+这样的话，当返回404找不到对应的资源的时候，在浏览器上可以看到，最终返回的状态码是200，这块需要注意下，编写error_page后面的内容，404后面需要加空格，200前面不能加空格
+```
+
+### 静态资源优化配置语法
+Nginx对静态资源如何进行优化配置。这里从三个属性配置进行优化：
+```
+sendfile on;
+tcp_nopush on;
+tcp_nodeplay on;
+```
+
+| 语法   | sendﬁle on \| oﬀ;          |
+| ------ | ------------------------- |
+| 默认值 | sendﬁle oﬀ;               |
+| 位置   | http、server、location... |
+（1）sendﬁle，用来开启高效的文件传输模式。一般配置在http块。
+
+请求静态资源的过程：客户端通过网络接口向服务端发送请求，操作系统将这些客户端的请求传递给服务器端应用程序，服务器端应用程序会处理这些请求，请求处理完成以后，操作系统还需要将处理得到的结果通过网络适配器传递回去。如：
+```
+server {
+	listen 80;
+	server_name localhost；
+	location / {
+		root html;
+		index index.html;
+	}
+}
+在html目录下有一个welcome.html页面，访问地址
+http://192.168.200.133/welcome.html
+```
+
+![](assets/Pasted%20image%2020240705095742.png)
+
+
+| 语法   | tcp_nopush on\|off;    |
+| ------ | ---------------------- |
+| 默认值 | tcp_nopush oﬀ;         |
+| 位置   | http、server、location |
+（2）tcp_nopush：该指令必须在sendfile打开的状态下才会生效，主要是用来提升网络包的传输'效率'
+
+
+| 语法   | tcp_nodelay on\|off;   |
+| ------ | ---------------------- |
+| 默认值 | tcp_nodelay on;        |
+| 位置   | http、server、location |
+（3）tcp_nodelay：该指令必须在keep-alive连接开启的情况下才生效，来提高网络包传输的'实时性'
+
+![](assets/Pasted%20image%2020240705100538.png)
+
+经过刚才的分析，"tcp_nopush"和”tcp_nodelay“看起来是"互斥的"，那么为什么要将这两个值都打开，这个大家需要知道的是在linux2.5.9以后的版本中两者是可以兼容的，三个指令都开启的好处是，sendfile可以开启高效的文件传输模式，tcp_nopush开启可以确保在发送到客户端之前数据包已经充分“填满”， 这大大减少了网络开销，并加快了文件发送的速度。 然后，当它到达最后一个可能因为没有“填满”而暂停的数据包时，Nginx会忽略tcp_nopush参数， 然后，tcp_nodelay强制套接字发送数据。由此可知，TCP_NOPUSH可以与TCP_NODELAY一起设置，它比单独配置TCP_NODELAY具有更强的性能。所以我们可以使用如下配置来优化Nginx静态资源的处理
+```
+#建议都开启
+sendfile on;
+tcp_nopush on;
+tcp_nodelay on;
+```
+
+
+### Nginx静态资源压缩实战
+在Nginx的配置文件中可以通过配置gzip来对静态资源进行压缩，相关的指令可以配置在http块、server块和location块中，Nginx可以通过
+```
+ngx_http_gzip_module模块
+ngx_http_gzip_static_module模块
+ngx_http_gunzip_module模块
+```
+对这些指令进行解析和处理。
+
+接下来我们从以下内容进行学习
+```
+（1）Gzip各模块支持的配置指令
+（2）Gzip压缩功能的配置
+（3）Gzip和sendfile的冲突解决
+（4）浏览器不支持Gzip的解决方案
+```
+
+#### Gzip模块配置指令
+接下来所学习的指令都来自ngx_http_gzip_module模块，该模块会在nginx安装的时候内置到nginx的安装环境中，也就是说我们可以直接使用这些指令。
+
+| 语法   | gzip on\|off;             |
+| ------ | ------------------------- |
+| 默认值 | gzip off;                 |
+| 位置   | http、server、location... |
+1. gzip指令：该指令用于开启或者关闭gzip功能
+```
+http{
+   gzip on;
+}
+```
+注意只有该指令为打开状态，下面的指令才有效果
+
+| 语法   | gzip_types mime-type ...; |
+| ------ | ------------------------- |
+| 默认值 | gzip_types text/html;     |
+| 位置   | http、server、location    |
+2. gzip_types指令：该指令可以根据响应页的MIME类型选择性地开启Gzip压缩功能：
+所选择的值可以从mime.types文件中进行查找，也可以使用 `*` 代表所有。
+```
+http{
+	gzip_types application/javascript;
+}
+```
+图片与视频已经是高度压缩的，不适合再gzip压缩。文本类的文件适合gzip，会压缩到原本的三分之一
+
+| 语法   | gzip_comp_level level; |
+| ------ | ---------------------- |
+| 默认值 | gzip_comp_level 1;     |
+| 位置   | http、server、location |
+3. gzip_comp_level指令：该指令用于设置Gzip压缩程度，级别从1-9，1表示要是程度最低，但是效率最高，9刚好相反，压缩程度最高，但是效率最低最费时间。
+```
+http{
+	gzip_comp_level 6;
+}
+```
+
+| 语法   | gzip_vary on\|off;     |
+| ------ | ---------------------- |
+| 默认值 | gzip_vary off;         |
+| 位置   | http、server、location |
+4. gzip_vary指令：该指令用于设置使用Gzip进行压缩发送是否携带“Vary:Accept-Encoding”头域的响应头部。主要是告诉接收方，所发送的数据经过了Gzip压缩处理
+![](assets/Pasted%20image%2020240705102803.png)
+
+| 语法   | gzip_buffers number size;  |
+| ------ | -------------------------- |
+| 默认值 | gzip_buffers 32 4k\|16 8k; |
+| 位置   | http、server、location     |
+5. gzip_buffers指令：该指令用于处理请求压缩的缓冲区数量和大小。
+其中number指定Nginx服务器向系统申请缓存空间个数，size指的是每个缓存空间的大小。主要实现的是申请number个每个大小为size的内存空间。这个值的设定一般会和服务器的操作系统有关，所以建议此项不设置，使用默认值即可。
+```
+gzip_buffers 4 16K;	  #缓存空间大小
+```
+
+| 语法   | gzip_disable regex ...; |
+| ------ | ----------------------- |
+| 默认值 | —                       |
+| 位置   | http、server、location  |
+6. gzip_disable指令：针对不同种类客户端发起的请求，可以选择性地开启和关闭Gzip功能。
+regex：根据客户端的浏览器标志(user-agent)来设置，支持使用正则表达式。指定的浏览器标志不使用Gzip.该指令一般是用来排除一些明显不支持Gzip的浏览器。
+```
+#关闭IE6以下
+gzip_disable "MSIE [1-6]\.";
+```
+
+| 语法   | gzip_http_version 1.0\|1.1; |
+| ------ | --------------------------- |
+| 默认值 | gzip_http_version 1.1;      |
+| 位置   | http、server、location      |
+7. gzip_http_version指令：针对不同的HTTP协议版本，可以选择性地开启和关闭Gzip功能。
+该指令是指定使用Gzip的HTTP最低版本，该指令一般采用默认值即可。
+
+| 语法   | gzip_min_length length; |
+| ------ | ----------------------- |
+| 默认值 | gzip_min_length 20;     |
+| 位置   | http、server、location  |
+8. gzip_min_length指令：该指令针对传输数据的大小，可以选择性地开启和关闭Gzip功能
+```
+nignx计量大小的单位：bytes[字节] / kb[千字节] / M[兆]
+例如: 1024 / 10k|K / 10m|M
+```
+Gzip压缩功能对大数据的压缩效果明显，但是如果要压缩的数据比较小的化，可能出现越压缩数据量越大的情况，因此我们需要根据响应内容的大小来决定是否使用Gzip功能，响应页面的大小可以通过头信息中的`Content-Length`来获取。但是如何使用了Chunk编码动态压缩，该指令将被忽略。建议设置为1K或以上。
+
+| 语法   | gzip_proxied  off\|expired\|no-cache\|<br/>no-store\|private\|no_last_modified\|no_etag\|auth\|any; |
+| ------ | ------------------------------------------------------------ |
+| 默认值 | gzip_proxied off;                                            |
+| 位置   | http、server、location                                       |
+9. gzip_proxied指令：反向代理时，该指令设置是否对服务端返回的结果进行Gzip压缩。
+```
+off - 关闭Nginx服务器对后台服务器返回结果的Gzip压缩
+expired - 启用压缩，如果header头中包含 "Expires" 头信息
+no-cache - 启用压缩，如果header头中包含 "Cache-Control:no-cache" 头信息
+no-store - 启用压缩，如果header头中包含 "Cache-Control:no-store" 头信息
+private - 启用压缩，如果header头中包含 "Cache-Control:private" 头信息
+no_last_modified - 启用压缩,如果header头中不包含 "Last-Modified" 头信息
+no_etag - 启用压缩 ,如果header头中不包含 "ETag" 头信息
+auth - 启用压缩 , 如果header头中包含 "Authorization" 头信息
+any - 无条件启用压缩
+```
+
+#### Gzip压缩功能的实例配置
+```
+gzip on;  			  #开启gzip功能
+gzip_types *;		  #压缩源文件类型，注意：在生产环境时不要设置为*，需根据具体的访问资源类型设定
+gzip_comp_level 6;	  #gzip压缩级别
+gzip_min_length 1024; #进行压缩响应页面的最小长度,content-length
+gzip_buffers 4 16K;	  #缓存空间大小
+gzip_http_version 1.1; #指定压缩响应所需要的最低HTTP请求版本
+gzip_vary  on;		  #往头信息中添加压缩标识
+gzip_disable "MSIE [1-6]\."; #对IE6以下的版本都不进行压缩
+gzip_proxied  off； #nginx作为反向代理压缩服务端返回数据的条件
+```
+这些配置在很多地方可能都会用到，所以我们可以将这些内容抽取到一个配置文件中，然后通过include指令把配置文件再次加载到nginx.conf配置文件中，方法使用。
+
+nginx_gzip.conf
+```
+gzip on;
+gzip_types *;
+gzip_comp_level 6;
+gzip_min_length 1024;
+gzip_buffers 4 16K;
+gzip_http_version 1.1;
+gzip_vary  on;
+gzip_disable "MSIE [1-6]\.";
+gzip_proxied  off;
+```
+
+nginx.conf
+```
+include nginx_gzip.conf
+```
+
+
+#### Gzip和sendfile共存问题
+前面在讲解sendfile的时候，提到过，开启sendfile以后，在读取磁盘上的静态资源文件的时候，可以减少拷贝的次数，可以不经过用户进程将静态文件通过网络设备发送出去，但是Gzip要想对资源压缩，是需要经过用户进程进行操作的。所以如何解决两个设置的共存问题。
+
+可以使用ngx_http_gzip_static_module模块的gzip_static指令来解决。
+
+##### gzip_static指令
+
+| 语法   | **gzip_static** on \| off \| always; |
+| ------ | ------------------------------------ |
+| 默认值 | gzip_static off;                     |
+| 位置   | http、server、location               |
+gzip_static: 检查与访问资源同名的.gz文件时，response中以gzip相关的header返回.gz文件的内容。
+
+添加上述命令后，执行`nginx -t`，会报一个错误，`unknown directive "gzip_static"`主要的原因是Nginx默认是没有添加ngx_http_gzip_static_module模块。
+
+##### 添加模块到Nginx的实现步骤
+(1)查询当前Nginx的配置参数
+```
+nginx -V
+```
+
+(2)将nginx安装目录下sbin目录中的nginx二进制文件进行更名
+```
+cd /usr/local/nginx/sbin
+mv nginx nginxold
+```
+
+(3) 进入Nginx的安装目录
+```
+cd /root/nginx/core/nginx-1.16.1
+```
+
+(4)执行make clean清空之前编译的内容
+```
+make clean
+```
+
+(5)使用configure来配置参数，注意：不要忘记将原来的配置也加上
+```
+./configure --with-http_gzip_static_module
+```
+
+(6)使用make命令进行编译
+```
+make
+```
+
+(7) 将objs目录下的nginx二进制执行文件移动到nginx安装目录下的sbin目录中
+```
+mv objs/nginx /usr/local/nginx/sbin
+```
+
+(8)执行更新命令
+```
+make upgrade
+```
+
+##### gzip_static测试使用
+(1)直接访问`http://192.168.200.133/jquery.js`
+```
+Content-Length: 280364
+```
+
+(2)使用gzip命令进行压缩
+```
+cd /usr/local/nginx/html
+gzip jquery.js
+```
+
+(3)再次访问`http://192.168.200.133/jquery.js`
+```
+Content-Length: 83164
+Content-Encoding: gzip
+Vary: Accept-Encoding
+```
+
