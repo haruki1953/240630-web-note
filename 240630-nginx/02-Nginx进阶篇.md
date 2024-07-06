@@ -1,3 +1,4 @@
+[Nginx_day02](资料/黑马nginx/day02/笔记/Nginx_day02.md)
 ## Nginx服务器基础配置实例
 需求如下:
 ```
@@ -903,4 +904,207 @@ Content-Length: 83164
 Content-Encoding: gzip
 Vary: Accept-Encoding
 ```
+
+
+### 静态资源的缓存处理
+什么是缓存
+```
+缓存（cache），原始意义是指访问速度比一般随机存取存储器（RAM）快的一种高速存储器，通常它不像系统主存那样使用DRAM技术，而使用昂贵但较快速的SRAM技术。缓存的设置是所有现代计算机系统发挥高性能的重要因素之一。
+```
+
+什么是web缓存
+```
+Web缓存是指一个Web资源（如html页面，图片，js，数据等）存在于Web服务器和客户端（浏览器）之间的副本。缓存会根据进来的请求保存输出内容的副本；当下一个请求来到的时候，如果是相同的URL，缓存会根据缓存机制决定是直接使用副本响应访问请求，还是向源服务器再次发送请求。比较常见的就是浏览器会缓存访问过网站的网页，当再次访问这个URL地址的时候，如果网页没有更新，就不会再次下载网页，而是直接使用本地缓存的网页。只有当网站明确标识资源已经更新，浏览器才会再次下载网页
+```
+
+#### web缓存的种类
+```
+客户端缓存
+	浏览器缓存
+服务端缓存
+	Nginx / Redis / Memcached等
+```
+
+
+#### 浏览器缓存的执行流程
+HTTP协议中和页面缓存相关的字段，我们先来认识下：
+
+| header        | 说明                                        |
+| ------------- | ------------------------------------------- |
+| Expires       | 缓存过期的日期和时间                        |
+| Cache-Control | 设置和缓存相关的配置信息                    |
+| Last-Modified | 请求资源最后修改时间                        |
+| ETag          | 请求变量的实体标签的当前值，比如文件的MD5值 |
+
+![](assets/1581762832290.png)
+
+```
+（1）用户首次通过浏览器发送请求到服务端获取数据，客户端是没有对应的缓存，所以需要发送request请求来获取数据；
+
+（2）服务端接收到请求后，获取服务端的数据及服务端缓存的允许后，返回200的成功状态码并且在响应头上附上对应资源以及缓存信息；
+
+（3）当用户再次访问相同资源的时候，客户端会在浏览器的缓存目录中查找是否存在响应的缓存文件
+
+（4）如果没有找到对应的缓存文件，则走(2)步
+
+（5）如果有缓存文件，接下来对缓存文件是否过期进行判断，过期的判断标准是(Expires),
+
+（6）如果没有过期，则直接从本地缓存中返回数据进行展示
+
+（7）如果Expires过期，接下来需要判断缓存文件是否发生过变化
+
+（8）判断的标准有两个，一个是ETag(Entity Tag),一个是Last-Modified
+
+（9）判断结果是未发生变化，则服务端返回304，直接从缓存文件中获取数据
+
+（10）如果判断是发生了变化，重新从服务端获取数据，并根据缓存协商(服务端所设置的是否需要进行缓存数据的设置)来进行数据缓存。
+```
+
+#### 浏览器缓存相关指令
+Nginx需要进行缓存相关设置，就需要用到如下的指令
+
+##### expires指令
+expires:该指令用来控制页面缓存的作用。可以通过该指令控制HTTP应答中的“Expires"和”Cache-Control"
+
+| 语法   | expires   [modified] time<br/>expires epoch\|max\|off; |
+| ------ | ------------------------------------------------------ |
+| 默认值 | expires off;                                           |
+| 位置   | http、server、location                                 |
+
+time：可以整数也可以是负数，指定过期时间，如果是负数，Cache-Control则为no-cache,如果为整数或0，则Cache-Control的值为max-age=time;
+
+epoch：指定Expires的值为'1 January,1970,00:00:01 GMT'(1970-01-01 00:00:00)，Cache-Control的值no-cache
+
+max：指定Expires的值为'31 December2037 23:59:59GMT' (2037-12-31 23:59:59) ，Cache-Control的值为10年
+
+off：默认不缓存。
+
+
+##### add_header指令
+add_header指令是用来添加指定的响应头和响应值。
+
+| 语法   | add_header name value [always]; |
+| ------ | ------------------------------- |
+| 默认值 | —                               |
+| 位置   | http、server、location...       |
+
+Cache-Control作为响应头信息，可以设置如下值：
+
+缓存响应指令：
+```
+Cache-control: must-revalidate
+Cache-control: no-cache
+Cache-control: no-store
+Cache-control: no-transform
+Cache-control: public
+Cache-control: private
+Cache-control: proxy-revalidate
+Cache-Control: max-age=<seconds>
+Cache-control: s-maxage=<seconds>
+```
+
+| 指令             | 说明                                           |
+| ---------------- | ---------------------------------------------- |
+| must-revalidate  | 可缓存但必须再向源服务器进行确认               |
+| no-cache         | 缓存前必须确认其有效性                         |
+| no-store         | 不缓存请求或响应的任何内容                     |
+| no-transform     | 代理不可更改媒体类型                           |
+| public           | 可向任意方提供响应的缓存                       |
+| private          | 仅向特定用户返回响应                           |
+| proxy-revalidate | 要求中间缓存服务器对缓存的响应有效性再进行确认 |
+| max-age=<秒>     | 响应最大Age值                                  |
+| s-maxage=<秒>    | 公共缓存服务器响应的最大Age值                  |
+
+
+### Nginx的跨域问题解决
+#### 同源策略
+浏览器的同源策略：是一种约定，是浏览器最核心也是最基本的安全功能，如果浏览器少了同源策略，则浏览器的正常功能可能都会受到影响。
+
+同源：协议、域名(IP)、端口相同即为同源
+
+#### 跨域问题
+简单描述下:
+```
+有两台服务器分别为A,B,如果从服务器A的页面发送异步请求到服务器B获取数据，如果服务器A和服务器B不满足同源策略，则就会出现跨域问题。
+```
+
+#### 解决方案
+使用add_header指令，该指令可以用来添加一些头信息
+
+| 语法   | add_header name  value... |
+| ------ | ------------------------- |
+| 默认值 | —                         |
+| 位置   | http、server、location    |
+
+此处用来解决跨域问题，需要添加两个头信息，一个是`Access-Control-Allow-Origin`,`Access-Control-Allow-Methods`
+
+Access-Control-Allow-Origin: 直译过来是允许跨域访问的源地址信息，可以配置多个(多个用逗号分隔)，也可以使用`*`代表所有源
+
+Access-Control-Allow-Methods:直译过来是允许跨域访问的请求方式，值可以为 GET POST PUT DELETE...,可以全部设置，也可以根据需要设置，多个用逗号分隔
+
+具体配置方式
+```
+location /getUser{
+    add_header Access-Control-Allow-Origin *;
+    add_header Access-Control-Allow-Methods GET,POST,PUT,DELETE;
+    default_type application/json;
+    return 200 '{"id":1,"name":"TOM","age":18}';
+}
+```
+
+
+### 静态资源防盗链
+#### Nginx防盗链的实现原理：
+HTTP请求头Referer，当浏览器向web服务器发送请求的时候，一般都会带上Referer,来告诉浏览器该网页是从哪个页面链接过来的。
+![](assets/Pasted%20image%2020240706113500.png)
+
+后台服务器可以根据获取到的这个Referer信息来判断是否为自己信任的网站地址，如果是则放行继续访问，如果不是则可以返回403(服务端拒绝访问)的状态信息。
+
+Nginx防盗链的具体实现:
+
+valid_referers：nginx会通过查看referer自动和valid_referers后面的内容进行匹配，如果匹配到了就将`$invalid_referer`变量置0，如果没有匹配到，则将`$invalid_referer`变量置为1，匹配的过程中不区分大小写。
+
+| 语法   | valid_referers none\|blocked\|server_names\|string... |
+| ------ | ----------------------------------------------------- |
+| 默认值 | —                                                     |
+| 位置   | server、location                                      |
+
+```
+none: 如果Header中的Referer为空，允许访问
+
+blocked:在Header中的Referer不为空，但是该值被防火墙或代理进行伪装过，如不带"http://" 、"https://" 等协议头的资源允许访问。
+
+server_names:指定具体的域名或者IP
+
+string: 可以支持正则表达式和*的字符串。如果是正则表达式，需要以`~`开头表示，例如
+```
+
+```
+location ~*\.(png|jpg|gif){
+           valid_referers none blocked www.baidu.com 192.168.200.222 *.example.com example.*  www.example.org  ~\.google\.;
+           if ($invalid_referer){
+                return 403;
+           }
+           root /usr/local/nginx/html;
+
+}
+```
+
+#### 针对目录进行防盗链
+配置如下：
+```
+location /images {
+           valid_referers none blocked www.baidu.com 192.168.200.222 *.example.com example.*  www.example.org  ~\.google\.;
+           if ($invalid_referer){
+                return 403;
+           }
+           root /usr/local/nginx/html;
+
+}
+```
+
+
+> 问题：Referer的限制比较粗，比如随意加一个Referer，上面的方式是无法进行限制的。
+> 第三方模块`ngx_http_accesskey_module` ，以后再说
+
 
