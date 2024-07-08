@@ -1,8 +1,9 @@
+## 手机推特重定向问题
 自己的域名 discord.sakiko.top 会重定向至discord邀请链接，是用nginx配置的301重定向。
 
 现在的问题是：在手机推特点开 discord.sakiko.top 时，会显示“其他应用打开”
 
-解决方案：不返回301响应，而是返回静态页面，通过js转到discord邀请链接
+解决方案：不返回301响应，而是返回静态页面，通过js重载页面转到discord邀请链接
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -35,3 +36,15 @@ location / {
 }
 ```
 
+
+## TweetShift同步推特内容至Discord
+TweetShift Bot：免费！自动！同步推特内容至Discord！
+https://www.youtube.com/watch?v=I9MZZY06GIs
+
+https://tweetshift.com/
+
+将机器人加入服务器
+
+在仪表盘配置 https://tweetshift.com/dashboard
+
+好像不行。。。
