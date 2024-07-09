@@ -29,3 +29,8 @@ Nginx进阶篇：
 ### 240708
 - 负载均衡
 - web缓存
+
+### 240709nginx
+- 目录列表autoindex
+- 用户认证auth_basic
+- httpd-tools 密码工具

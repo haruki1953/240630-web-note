@@ -130,7 +130,7 @@ server{
 
 3.在Nginx所在服务器创建如下目录，并将对应的静态资源放入指定的位置
 
-![1604493947499](assets/1604493947499.png)
+![](assets/1604493947499.png)
 
 其中index.html页面的内容如下:
 
@@ -275,7 +275,7 @@ upstream webservice{
 
 ### VRRP介绍
 
-![1604495824757](assets/1604495824757.png)
+![](assets/1604495824757.png)
 
 VRRP（Virtual Route Redundancy Protocol）协议，翻译过来为虚拟路由冗余协议。VRRP协议将两台或多台路由器设备虚拟成一个设备，对外提供虚拟路由器IP,而在路由器组内部，如果实际拥有这个对外IP的路由器如果工作正常的话就是MASTER,MASTER实现针对虚拟路由器IP的各种网络功能。其他设备不拥有该虚拟IP，状态为BACKUP,处了接收MASTER的VRRP状态通告信息以外，不执行对外的网络功能。当主机失效时，BACKUP将接管原先MASTER的网络功能。
 
@@ -301,7 +301,7 @@ Master路由和Backup路由之间会有一个心跳检测，Master会定时告�
 
 
 
-![1604495442179](assets/1604495442179.png)
+![](assets/1604495442179.png)
 
 ### 环境搭建
 
