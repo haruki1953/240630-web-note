@@ -134,8 +134,99 @@ tweetcord_sakiko:0.4
 # 查看日志
 docker logs tweetcord_sakiko
 
-# 设置容器开机自启【TODO】
+# 设置容器开机自启
+docker update --restart=always tweetcord_sakiko
+# 或（手动停止容器后不会开机自启）
+docker update --restart=unless-stopped tweetcord_sakiko
 ```
 
 discord机器人倒是好了，但好像不会同步twitter，明天再说吧
+
+- 好像twitter token拿错了，是不是应该拿sakiko214的
+- 配置configs.yml文件，还是尽量用预设的配置吧，等正常了再改
+
+修改配置
+```
+docker exec -it tweetcord_sakiko /bin/sh
+
+vi configs.yml
+vi .env
+
+exit
+
+docker restart tweetcord_sakiko
+```
+
+```sh
+docker rm -f tweetcord_sakiko
+
+docker run -d \
+--name tweetcord_sakiko \
+-v /root/tweetcord_sakiko/data:/bot/data \
+--restart=unless-stopped \
+tweetcord_sakiko:0.4
+```
+
+## 测试-总结
+再创建一个twitter号吧，好像是要必须保证在某个浏览器上登录账号，保证有推送通知，才能使其生效
+
+哦现在好了，现在来详细 **总结：**
+- 现在我有三个推特账号 `@harukiO_0` `@sakiko214` `@sakikoO_O`
+	- 其中 `@harukiO_0` `@sakiko214` 登录在火狐
+	- `@sakikoO_O` 登录在谷歌浏览器
+- 或许必须使账号中有推文通知，tweetcord才会运作
+	- 所以将 `@sakikoO_O` 登录在不同的浏览器（如果在一个浏览器可能不显示通知），并在浏览器开启推文推送通知
+	- .env中的TWITTER_TOKEN设置为账号`@sakikoO_O`的
+	- 现在在discord中使用指令添加 `@sakiko214`，再使用其发帖，`@sakikoO_O`（谷歌浏览器）有推文通知，tweetcord也正常运作
+- 虽然在测试时将 `tweets` 更新相关的时间设置的很短，但在部署时还是长一点好
+
+discord的包不想再重新打了，现在梳理一下 **部署流程：**
+1. 运行容器
+```sh
+docker run -d \
+    --name tweetcord_sakiko \
+    -v /root/tweetcord_sakiko/data:/bot/data \
+    --restart=unless-stopped \
+    tweetcord_sakiko:0.4
+```
+
+2. 修改配置
+```sh
+# 进入容器
+docker exec -it tweetcord_sakiko /bin/sh
+vi configs.yml
+vi .env
+```
+configs.yml
+```yml
+prefix: '.'
+activity_name: '春日影'
+tweets_check_period: 100
+tweets_updater_retry_delay: 3000
+tasks_monitor_check_period: 60
+tasks_monitor_log_period: 14400
+auto_turn_off_notification: true
+auto_unfollow: true
+```
+.env
+```
+BOT_TOKEN=YourDiscordBotToken
+TWITTER_TOKEN=sakikoO_OTwitterAccountAuthToken
+DATA_PATH=./data/
+```
+
+```sh
+# 退出容器
+exit
+# 重启容器
+docker restart tweetcord_sakiko
+# 查看日志
+docker logs tweetcord_sakiko
+```
+
+参考
+- https://github.com/Yuuzi261/Tweetcord
+- https://www.youtube.com/watch?v=4JerLQkqPSo&t=5s
+- https://home.gamer.com.tw/artwork.php?sn=5808333
+
 
