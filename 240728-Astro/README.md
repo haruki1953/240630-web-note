@@ -3,3 +3,5 @@
 官网： https://astro.build/
 
 教程： https://docs.astro.build/zh-cn/getting-started/
+
+- [ ] astro使用ts
