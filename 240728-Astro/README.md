@@ -5,3 +5,5 @@
 教程： https://docs.astro.build/zh-cn/getting-started/
 
 - [ ] astro使用ts
+- [ ] astro使用vue
+- [ ] 组件库/模板
