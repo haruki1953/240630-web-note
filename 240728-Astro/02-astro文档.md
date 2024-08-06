@@ -1,22 +1,27 @@
 https://docs.astro.build/zh-cn/getting-started/
 
-想要了解的
-- [ ] astro的ts支持
-- [ ] astro使用vue组件
-- [ ] 组件库/模板 有哪些及其使用
-- [ ] 服务端渲染SSR、静态站点生成SSG
 
+## 基础知识
 
-## 项目结构
-https://docs.astro.build/zh-cn/basics/project-structure/
+**项目结构** https://docs.astro.build/zh-cn/basics/project-structure/
 
-## 组件
 **Astro 组件** https://docs.astro.build/zh-cn/basics/astro-components/
+- **TypeScript支持** https://docs.astro.build/zh-cn/guides/typescript/
+- **处理脚本和事件** `<script>` https://docs.astro.build/zh-cn/guides/client-side-scripts/
+- **UI 框架组件集成** react vue https://docs.astro.build/zh-cn/guides/framework-components/
 
-**TypeScript支持** https://docs.astro.build/zh-cn/guides/typescript/
+**页面** https://docs.astro.build/zh-cn/basics/astro-pages/
 
-**处理脚本和事件** `<script>` https://docs.astro.build/zh-cn/guides/client-side-scripts/
+**布局** https://docs.astro.build/zh-cn/basics/layouts/
 
-**UI 框架组件集成** react vue https://docs.astro.build/zh-cn/guides/framework-components/
+**Astro 模板语法** https://docs.astro.build/zh-cn/basics/astro-syntax/
+
+**渲染模式** https://docs.astro.build/zh-cn/basics/rendering-modes/
+- SSG、SSR、CSR
+
+**导入** https://docs.astro.build/zh-cn/guides/imports/
+
+
+
 
 

@@ -4,6 +4,8 @@
 
 教程： https://docs.astro.build/zh-cn/getting-started/
 
-- [ ] astro使用ts
-- [ ] astro使用vue
-- [ ] 组件库/模板
+想要了解的
+- [ ] astro的ts支持
+- [ ] astro使用vue组件，及pinia
+- [ ] 组件库/模板 有哪些及其使用
+- [ ] 服务端渲染SSR、静态站点生成SSG
