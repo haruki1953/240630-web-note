@@ -8,3 +8,7 @@
 ### 240812-tweet-blog
 - 成功演示了通过 X api 发推
 - 重新规划了项目
+
+### 240813-tweet-blog
+- 初始化了项目
+- 整理了adminSystem，保证了其扩展性
