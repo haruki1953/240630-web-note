@@ -1,0 +1,35 @@
+```
+curl -X PUT \
+  http://127.0.0.1:3000/admin/info \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "jwtAdminExpSeconds": 2592000,
+    "loginMaxFailCount": 10,
+    "loginLockSeconds": 3600
+}'
+
+
+curl -X GET \
+  http://127.0.0.1:3000/admin/info \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' 
+
+
+curl -X PUT \
+  http://127.0.0.1:3000/admin/auth \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "admin",
+    "password": "adminadminadmin"
+}'
+
+
+curl -X POST \
+  http://127.0.0.1:3000/public/admin-login \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "admin",
+    "password": "adminadmin"
+}'
+```
