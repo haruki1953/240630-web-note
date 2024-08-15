@@ -1,4 +1,15 @@
 ```
+curl -X POST \
+  http://127.0.0.1:3000/post \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "content": "hello world",
+    "images": [],
+    "createdAt": "2024-04-04"
+}'
+
+
 curl -X PUT \
   http://127.0.0.1:3000/admin/info \
   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' \
