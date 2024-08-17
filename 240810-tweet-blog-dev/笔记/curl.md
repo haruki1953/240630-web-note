@@ -1,4 +1,63 @@
 ```
+curl -X GET \
+  http://127.0.0.1:3000/post/cursor/0 \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' 
+  
+
+curl -X GET \
+  http://127.0.0.1:3000/post/id/1 \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk'
+
+curl -X POST \
+  http://127.0.0.1:3000/post \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "content": "delete test",
+    "images": [2],
+    "parentPostId": 12
+}'
+
+curl -X PUT \
+  http://127.0.0.1:3000/post \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  	"id": 13,
+    "isDeleted": true
+}'
+
+curl -X POST \
+  http://127.0.0.1:3000/post \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "content": "delete test",
+    "images": [2],
+    "parentPostId": 7
+}'
+
+
+curl -X GET \
+  http://127.0.0.1:3000/public/post/id/1 
+
+curl -X DELETE \
+  http://127.0.0.1:3000/image/original/all \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk'
+
+curl -X DELETE \
+  http://127.0.0.1:3000/image/original/id/2 \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk'
+
+
+curl -X DELETE \
+  http://127.0.0.1:3000/image/all \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk'
+
+curl -X DELETE \
+  http://127.0.0.1:3000/image/id/4 \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk'
+
 curl -X DELETE \
   http://127.0.0.1:3000/post/all \
   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk'
@@ -9,7 +68,7 @@ curl -X PUT \
   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk' \
   -H 'Content-Type: application/json' \
   -d '{
-  	"id": 6,
+  	"id": 9,
     "isDeleted": true 
 }'
 
@@ -25,7 +84,7 @@ curl -X POST \
 
 
 curl -X DELETE \
-  http://127.0.0.1:3000/post/id/5 \
+  http://127.0.0.1:3000/post/id/9 \
   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MjYyMTAyNDF9.pG_uYtwB4FXVTJcqQkdSJA-Tddi_OmO6QqvPzos-sZk'
 
 

@@ -20,3 +20,5 @@ var defaultMaximumTruncationLength = 600; 保存
 ```
 
 重启，成功
+
+感觉600还是不太够，改为1600
