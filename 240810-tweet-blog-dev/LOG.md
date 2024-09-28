@@ -154,6 +154,15 @@
 - 优化对话框，手机返回、阻止滚动
 - 优化了双列布局
 
+### 240927-tweet-blog-vue3
+- 按element-plus官网的推荐重新调整了滚动方案 [页面抖动问题](https://element-plus.org/zh-CN/component/dialog.html#%E5%BD%93%E5%AF%B9%E8%AF%9D%E6%A1%86%E8%A2%AB%E6%98%BE%E7%A4%BA%E5%8F%8A%E9%9A%90%E8%97%8F%E6%97%B6-%E9%A1%B5%E9%9D%A2%E5%85%83%E7%B4%A0%E4%BC%9A%E6%9D%A5%E5%9B%9E%E7%A7%BB%E5%8A%A8-%E6%8A%96%E5%8A%A8-%E3%80%82)
+- 但是，引发了更多问题，如路由无法控制滚动，
+- 明天再想办法，可以自己全手动来设置overflow，并手动设置margin避免位移
+
+### 240928-tweet-blog-vue3
+- 重新进行防止背景滚动的实现
+- 菜单抽屉返回优化
+
 ### TODO
 - 图片修改优化
 - 解决帖子图片顺序无法控制的问题
