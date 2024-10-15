@@ -197,9 +197,11 @@
 ### 241008-tweet-blog-vue3
 - 帖子已读功能
 
+### 241008-tweet-blog-vue3
+- 收藏功能
+- useSettingStore，改为useStatesStore
 
 ### TODO
-- 收藏功能
 - 解决帖子图片顺序无法控制的问题
 - 优化帖子搜索，包含图片描述
 - 个人信息功能
