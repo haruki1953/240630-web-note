@@ -197,12 +197,17 @@
 ### 241008-tweet-blog-vue3
 - 帖子已读功能
 
-### 241008-tweet-blog-vue3
+### 241009-tweet-blog-vue3
 - 收藏功能
 - useSettingStore，改为useStatesStore
+
+### 241016-tweet-blog-vue3
+尝试解决帖子图片顺序无法控制的问题
+- 在Post表添加 imagesOrder 字段，保存图片id数组json字符串
 
 ### TODO
 - 解决帖子图片顺序无法控制的问题
 - 优化帖子搜索，包含图片描述
+- 优化后端的“状态管理”
 - 个人信息功能
 - 功能页面
