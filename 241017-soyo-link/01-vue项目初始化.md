@@ -27,4 +27,17 @@ layout中，分为上部的路由区，和下部的信息栏
 推送
 
 
+## 初始化项目
+```
+导出 sakiko-vue3-single-page-frame-v0.0.1
+在soyo-link项目目录解压
+初始化git，提交
+pnpm i
+
+改样式
+改AboutDialog
+```
+
+
+
 
