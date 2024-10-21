@@ -29,6 +29,7 @@ var defaultMaximumTruncationLength = 600; 保存
 https://github.com/microsoft/vscode/issues/64566#issuecomment-2199018004
 
 1. 使用 Ctrl+P，转到 `node_modules/typescript/lib/tsserver.js`
+    - 没有的话，找到 `node_modules/typescript/lib/tsc.js`
 2. 查找行 `var defaultMaximumTruncationLength = 160`
 3. 将其更改为 `1000` 或您选择的价值。
 4. 打开 Ctrl+Shift+P 菜单，选择 TypeScript：选择 TypeScript 版本...
