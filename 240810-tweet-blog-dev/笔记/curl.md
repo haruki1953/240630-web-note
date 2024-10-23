@@ -1,3 +1,45 @@
+### store测试
+```
+curl -X GET \
+  http://127.0.0.1:3000/post/cursor/0 \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' 
+
+curl -X PUT \
+  http://127.0.0.1:3000/image/config \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "imageLargeMaxLength": 1600,
+  	"imageSmallMaxLength": 600,
+  	"imageQuality": 85
+}'
+
+curl -X GET \
+  http://127.0.0.1:3000/image/config \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE'
+
+curl -X POST \
+  http://127.0.0.1:3000/public/admin-login \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "example_user",
+    "password": "example_password"
+}'
+
+curl -X PUT \
+  http://127.0.0.1:3000/admin/auth \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzIyNjY5MDF9.OGgabYEnDHvypgAlsVixc8l3Rz6kAfeeOkNnP1KuuOM' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "username": "example_user",
+    "password": "example_password"
+}'
+
+curl -X GET \
+  http://127.0.0.1:3000/admin/info \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzIyNjY5MDF9.OGgabYEnDHvypgAlsVixc8l3Rz6kAfeeOkNnP1KuuOM' 
+```
+
 ### 图片id查询 分页查询
 ```
 curl -X GET \
