@@ -5,6 +5,9 @@ https://segmentfault.com/a/1190000043495782
 VSCode-install-path/resources/app/extensions/node_modules/typescript/lib/tsserver.js
 
 "C:\Program Files\Microsoft VS Code\resources\app\extensions\node_modules\typescript\lib\tsserver.js"
+
+【241024 新版可能时这个，好像管用】
+"C:\Program Files\Microsoft VS Code\resources\app\extensions\node_modules\typescript\lib\tsserver.js"
 ```
 
 2、打开tsserver.js（提前备份）
@@ -25,6 +28,8 @@ var defaultMaximumTruncationLength = 600; 保存
 
 
 ### 另一种方法
+【241024 好像也不管用了】
+
 对于新版本vs，上面的不管用了，这里的管用
 https://github.com/microsoft/vscode/issues/64566#issuecomment-2199018004
 
