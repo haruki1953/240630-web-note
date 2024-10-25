@@ -1,3 +1,52 @@
+### profile路由
+```
+curl -X PUT \
+  http://127.0.0.1:3000/profile/social-medias \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "socialMedias": [
+      {
+        "name": "Twitter",
+        "description": "Follow me on Twitter",
+        "link": "https://twitter.com/username",
+        "fontawesomeClass": "fa-brands fa-x-twitter"
+      }
+    ]
+  }'
+
+
+curl -X PUT \
+  http://127.0.0.1:3000/profile/name-bio \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "haruki",
+    "bio": "its MyGO"
+  }'
+
+
+curl -X GET \
+  http://127.0.0.1:3000/profile/all \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' 
+
+
+curl -X GET \
+  http://127.0.0.1:3000/profile/store \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' 
+
+
+curl -X GET \
+  http://127.0.0.1:3000/profile/data \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' 
+
+
+curl -X GET \
+  http://127.0.0.1:3000/profile/test \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' 
+  
+```
+
 ### store测试
 ```
 curl -X GET \

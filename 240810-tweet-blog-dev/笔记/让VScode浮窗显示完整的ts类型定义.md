@@ -29,6 +29,7 @@ var defaultMaximumTruncationLength = 600; 保存
 
 ### 另一种方法
 【241024 好像也不管用了】
+【241025 好像明白了，这种方法应该将ts选为工作区版本才生效】
 
 对于新版本vs，上面的不管用了，这里的管用
 https://github.com/microsoft/vscode/issues/64566#issuecomment-2199018004
