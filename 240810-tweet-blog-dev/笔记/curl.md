@@ -1,6 +1,63 @@
 ### profile路由
 ```
 curl -X PUT \
+  http://127.0.0.1:3000/profile/external-links \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "externalLinks": [
+      {
+        "uuid": "123e4567-e89b-12d3-a456-426614174000",
+        "name": "GitHub",
+        "description": "GitHub",
+        "link": "https://github.com/username",
+        "icon": "ff99d2c3-b1f7-430e-9d95-06c2959414a4",
+        "isRadiu": true,
+        "type": "contact"
+      },
+      {
+        "uuid": "123e4567-e89b-12d3-a456-426614174001",
+        "name": "LinkedIn",
+        "description": "LinkedIn",
+        "link": "https://linkedin.com/in/username",
+        "icon": "ff99d2c3-b1f7-430e-9d95-06c2959414a4",
+        "isRadiu": false,
+        "type": "friend"
+      }
+    ]
+  }'
+
+
+curl -X DELETE \
+  http://127.0.0.1:3000/profile/external-icon/not-used \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE'
+
+
+curl -X DELETE \
+  http://127.0.0.1:3000/profile/external-icon/uuid/ff99d2c3-b1f7-430e-9d95-06c2959414a4 \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE'
+
+
+curl -X PUT \
+  http://127.0.0.1:3000/profile/avatar \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "uuid": "89965fc3-3a78-4fa5-832b-cfbef91739ab"
+  }'
+
+
+curl -X DELETE \
+  http://127.0.0.1:3000/profile/avatar/not-used \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE'
+
+
+curl -X DELETE \
+  http://127.0.0.1:3000/profile/avatar/uuid/90618a0d-0a13-41dd-9a16-c5d0cb0cf7f1 \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE'
+
+
+curl -X PUT \
   http://127.0.0.1:3000/profile/social-medias \
   -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkU3RyIjoiYWRtaW4iLCJleHAiOjE3MzgzMTc4MDN9.xbor8AJI3qMROExyAn3tuKG2KCNxqaUYiKeQjPxyoNE' \
   -H 'Content-Type: application/json' \
