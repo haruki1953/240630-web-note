@@ -25,8 +25,15 @@ https://app.uniswap.org/#/swap?inputCurrency=0x27e56fc93a7c9f7ad220c1206ef03ed30
 - 确保切换至 Polygon 链
 
 
+兑换USDC，应选第三个 Polygon 上的 USDC
+![](assets/Pasted%20image%2020241029170142.png)
 
+先卖0.1试试，燃料费0.02，OK
+![](assets/Pasted%20image%2020241029170753.png) 
 
+coinbase里能显示USDC 
+![](assets/Pasted%20image%2020241029171907.png)
 
-
+好了，现在可以全换出来了，OK
+![](assets/Pasted%20image%2020241029172502.png)
 
