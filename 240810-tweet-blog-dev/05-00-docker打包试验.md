@@ -413,3 +413,191 @@ docker exec -it tweblog-test-4 /bin/sh
 ```
 
 成功，看来prisma文件夹在运行时是必须的
+
+
+### 数据卷试验
+```sh
+docker run -d \
+	--name tweblog-test-4-v \
+	-v /root/tweblog-test-4-v/data:/app/data \
+	-p 51130:51125 \
+	tweblog-test:0.0.4
+
+docker exec -it tweblog-test-4-v /bin/sh
+```
+
+容器启动失败，好像是创建json文件失败，是权限问题，再试试
+```sh
+docker run -d \
+	--name tweblog-test-2-v \
+	-v /root/tweblog-test-2-v/data:/app/data \
+	-p 51131:51125 \
+	tweblog-test:0.0.2
+
+docker exec -it tweblog-test-2-v /bin/sh
+```
+这次启动成功了，看来还是不设置user比较好
+
+设置数据卷后，数据库果然出了问题，获取推文会弹出错误
+```
+因为数据库文件 sqlite.db 在构建时 pnpm prisma migrate dev 被创建
+当运行时绑定数据卷，好像就会将其覆盖
+
+其他的json文件倒是没问题，因为是在运行时生成的
+```
+
+
+#### prisma
+```
+# 安装 pnpm、安装依赖、生成数据库、编译和修剪依赖
+RUN npm install -g pnpm && \
+    pnpm install --frozen-lockfile && \
+    pnpm prisma migrate dev --name init && \
+    pnpm build && \
+    pnpm prune --prod
+
+自己的做法是错的，在构建时应该只生成Prisma Client
+pnpm prisma generate
+
+然后再运行时进行迁移（不存在时生成数据库文件）
+pnpm prisma migrate deploy
+
+而且pnpm以及依赖的安装应该独立处理，以助于复用
+# 生成PrismaClient、编译、修剪依赖、清理缓存
+RUN pnpm prisma generate && \
+    pnpm build && \
+    pnpm prune --prod && \
+    pnpm store prune
+
+可以写一个启动脚本，其中包含迁移和项目的运行 entrypoint.sh
+在运行前进行迁移，可以避免更新后数据库不同步的问题，也可以解决前面数据卷的问题
+#!/bin/sh
+pnpm prisma migrate deploy
+node dist/index.js
+```
+
+entrypoint.sh中还应该加上判断迁移是否成功
+```sh
+#!/bin/sh
+# Startup script for Prisma application
+# This script runs database migrations and starts the application
+
+echo "Starting database migrations..."
+pnpm prisma migrate deploy
+
+if [ $? -ne 0 ]; then
+  echo "Error: Database migration failed. Aborting application startup."
+  exit 1
+fi
+
+echo "Database migrations completed successfully"
+
+echo "Starting application..."
+node dist/index.js
+```
+
+#### 尝试1 运行失败
+```dockerfile
+FROM node:20.12.2-alpine3.19 AS base
+
+FROM base AS builder
+WORKDIR /app
+
+# 设置代理
+ENV http_proxy=http://192.168.2.110:10811/
+ENV https_proxy=http://192.168.2.110:10811/
+
+# 复制安装依赖文件
+COPY package.json pnpm-lock.yaml ./
+
+# 安装 pnpm、安装依赖
+RUN npm install -g pnpm && \
+    pnpm install --frozen-lockfile
+
+# 复制文件 tsconfig.json 和 start.sh
+COPY tsconfig.json start.sh ./
+# 复制目录 src、prisma 和 static
+COPY ./src ./src
+COPY ./prisma ./prisma
+COPY ./static ./static
+
+# 生成PrismaClient、编译、修剪依赖、清理缓存
+RUN pnpm prisma generate && \
+    pnpm build && \
+    pnpm prune --prod && \
+    pnpm store prune && \
+    npm cache clean --force
+
+# 取消代理
+ENV http_proxy=
+ENV https_proxy=
+
+# 设置端口
+ENV TWEET_BLOG_HONO_PORT=51125
+EXPOSE 51125
+
+ENTRYPOINT ["sh", "entrypoint.sh"]
+```
+
+构建
+```
+docker build -t tweblog-test-prisma:0.0.1 .
+```
+
+运行
+```sh
+docker run -d \
+	--name tweblog-test-prisma-v-1 \
+	-v /root/tweblog-test-prisma-v-1/data:/app/data \
+	-p 51132:51125 \
+	tweblog-test-prisma:0.0.1
+
+docker logs tweblog-test-prisma-v-1
+
+docker exec -it tweblog-test-prisma-v-1 /bin/sh
+```
+
+运行失败
+```
+Starting database migrations...
+undefined
+ ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL  Command "prisma" not found
+Error: Database migration failed. Aborting application startup.
+```
+
+#### 尝试2 运行成功
+将prisma作为生产依赖而不是开发依赖
+```
+pnpm uninstall prisma
+pnpm install prisma@5.18.0
+```
+
+重新复制文件
+
+构建
+```
+docker build -t tweblog-test-prisma:0.0.2 .
+```
+
+运行
+```sh
+docker run -d \
+	--name tweblog-test-prisma-v-2 \
+	-v /root/tweblog-test-prisma-v-2/data:/app/data \
+	-p 51133:51125 \
+	tweblog-test-prisma:0.0.2
+
+docker logs tweblog-test-prisma-v-2
+
+docker exec -it tweblog-test-prisma-v-2 /bin/sh
+```
+
+很成功，只是镜像有点大了，450MB
+
+### 尝试3 多阶段构建
+明天弄
+
+
+
+## TODO
+用户、权限相关
