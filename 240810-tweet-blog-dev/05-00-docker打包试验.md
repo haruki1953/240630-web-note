@@ -595,9 +595,11 @@ docker exec -it tweblog-test-prisma-v-2 /bin/sh
 很成功，只是镜像有点大了，450MB
 
 ### 尝试3 多阶段构建
-明天弄
+最终完成时再尝试
 
 
 
 ## TODO
-用户、权限相关
+- 用户、权限相关
+- `VOLUME [ "/app/data" ]` 
+- 使json数据版本兼容
