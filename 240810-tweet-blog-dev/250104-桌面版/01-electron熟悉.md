@@ -66,3 +66,39 @@ yarn init
 ```
 yarn add --dev electron
 ```
+
+electron和我想象中好像不太一样，不过还是勉强动起来了
+![](assets/Pasted%20image%2020250105135856.png)
+
+是让electron通过url直接获取后端所托管的前端
+```js
+const createWindow = () => {
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  })
+
+  // 加载 index.html
+  // mainWindow.loadFile('index.html')
+  mainWindow.loadURL('http://127.0.0.1:3000/admin/')
+
+  // 打开开发工具
+  // mainWindow.webContents.openDevTools()
+}
+```
+
+哦哦哦，自己好像可以想象到该怎样将web应用改为桌面版了
+```
+在后端的基础上更改，安装electron，index中后端启动后创建窗口
+
+可以在 router service system 等文件夹下新增 desktop 文件或文件夹，来编写用于控制桌面窗口的代码
+
+创建窗口相关代码可以封装在 system/desktop
+
+electron 主流的预加载脚本方式，IPC（进程间通信），是直接在前端控制桌面窗口，自己感觉有点混乱
+自己想到一种比较好方式，在后端创建用于控制窗口的接口 router/desktop，前端来调用接口来控制窗口
+```
