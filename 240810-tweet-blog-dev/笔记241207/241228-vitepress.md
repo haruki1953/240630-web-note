@@ -87,3 +87,43 @@ export default {
 ```
 tree /F /A
 ```
+
+### 元信息
+```html
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Tweblog">
+  <meta property="og:description" content="一个自己的微博客">
+  <meta property="og:image" content="https://tweblog.com/favicon.svg">
+  <meta property="og:url" content="https://tweblog.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Tweblog">
+
+  <!-- Twitter Card Meta Tags -->
+  <!-- 这是大图卡片 -->
+  <!-- <meta name="twitter:card" content="summary_large_image"> -->
+  <!-- 这是小图卡片 -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Tweblog">
+  <meta name="twitter:description" content="一个自己的微博客">
+  <meta name="twitter:image" content="https://tweblog.com/favicon.svg">
+  <meta name="twitter:site" content="@harukiO_0">
+```
+
+```ts
+export default defineConfig({
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.svg' }],
+    ['meta', { property: 'og:title', content: 'Tweblog' }],
+    ['meta', { property: 'og:description', content: '一个自己的微博客' }],
+    ['meta', { property: 'og:image', content: 'https://tweblog.com/favicon.svg' }],
+    ['meta', { property: 'og:url', content: 'https://tweblog.com/' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:site_name', content: 'Tweblog' }],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
+    ['meta', { name: 'twitter:title', content: 'Tweblog' }],
+    ['meta', { name: 'twitter:description', content: '一个自己的微博客' }],
+    ['meta', { name: 'twitter:image', content: 'https://tweblog.com/favicon.svg' }],
+    ['meta', { name: 'twitter:site', content: '@harukiO_0' }]
+  ]
+})
+```
