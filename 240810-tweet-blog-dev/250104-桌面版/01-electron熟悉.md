@@ -102,3 +102,18 @@ const createWindow = () => {
 electron 主流的预加载脚本方式，IPC（进程间通信），是直接在前端控制桌面窗口，自己感觉有点混乱
 自己想到一种比较好方式，在后端创建用于控制窗口的接口 router/desktop，前端来调用接口来控制窗口
 ```
+
+250118，完善了想法
+```
+创建electron专用的前后端
+tweblog-electron-hono
+tweblog-electron-vue3
+
+将前端生成在 tweblog-electron-hono/dist-vue3
+pnpm build --outDir ../tweblog-electron-hono/dist-vue3 --emptyOutDir
+
+后端在 tweblog-electron-hono/src 编写ts代码，
+编译后在 tweblog-electron-hono/dist
+
+后端对electron的控制，写在 tweblog-electron-hono/src/electron ，将在 index.ts 中调用
+```
