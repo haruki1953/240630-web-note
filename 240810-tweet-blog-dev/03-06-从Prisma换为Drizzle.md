@@ -1,3 +1,20 @@
+必须要将 ORM 从 Prisma 换为 Drizzle
+
+自己现在遇到的最大的问题是，Prisma 对 CLI 依赖严重，需要通过 CLI 进行迁移，不能在js代码中控制迁移。
+
+在用 docker 打包 web 应用时，还算比较容易。自己是通过在 entrypoint.sh 中 执行 `pnpm prisma migrate deploy` 然后再 `node dist/index.js`，以此实现在容器启动时运行迁移，在第一次运行时会创建数据库，应用更新后也能保证数据库正确。（不过好像也并不是最佳实践）
+
+在 electron 开发时用 CLI 来初始化数据库是没问题的，但打包时好像就不能像上面一样做，而且自己也还对 electron 打包原理一无所知，现在完全无从下手了😭
+
+Prisma 还有比较不好的一个问题就是有点大，看了一下容器内的情况，prisma占用了80M
+```
+/app/node_modules/.pnpm # du -h -d 1 | sort -hr
+133.1M  .
+32.7M   ./@prisma+engines@5.18.0
+26.0M   ./prisma@5.18.0
+24.2M   ./@prisma+client@5.18.0_prisma@5.18.0
+```
+
 将web版和桌面版简单同步一下
 ```
 在 tweet-blog-hono 新建分支 refactor/web-desktop-integration
