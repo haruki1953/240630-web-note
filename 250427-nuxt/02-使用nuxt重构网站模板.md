@@ -9,6 +9,7 @@
 - https://github.com/haruki1953/startbootstrap-agency-nuxt
 - https://github.com/haruki1953/startbootstrap-creative-nuxt
 - https://github.com/haruki1953/startbootstrap-grayscale-nuxt
+- https://github.com/haruki1953/startbootstrap-clean-blog-nuxt
 
 
 ## 使用nuxt重构网站模板的操作
